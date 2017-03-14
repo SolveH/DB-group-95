@@ -37,7 +37,6 @@ public class Connector extends DbConnect {
             stmt = conn.prepareStatement(sql);
             stmt.setInt(1, typeID);
             stmt.setString(2, workoutDateTime);
-            //stmt.setTimestamp(2, workoutDateTime.toLocalDate().getTime());
             stmt.setString(3, name);
             stmt.setString(4, duration);
             stmt.setString(5, shape);
@@ -52,6 +51,36 @@ public class Connector extends DbConnect {
 
 
         } catch (Exception e) {
+            System.out.println("Db error: "+e);
+        }
+    }
+
+    public void printWorkoutsWithExercises() {
+        try {
+            Statement stmt = conn.createStatement();
+            String query = "SELECT WORKOUT_TYPE.TYPE_ID, WORKOUT_TYPE.WORKOUT_NAME, EXERCISE.EXERCISE_ID, EXERCISE.EXERCISE_NAME, EXERCISE.DESCRIPTION\n" +
+                           "FROM EXERCISE, EXERCISE_WORKOUT_TYPE, WORKOUT_TYPE\n" +
+                           "WHERE EXERCISE_WORKOUT_TYPE.TYPE_ID = WORKOUT_TYPE.TYPE_ID\n" +
+                           "AND EXERCISE_WORKOUT_TYPE.EXERCISE_ID = EXERCISE.EXERCISE_ID;";
+
+            ResultSet rs = stmt.executeQuery(query);
+            int currentWorkoutID = -1;
+            while (rs.next()) {
+                int newWorkoutID = rs.getInt("TYPE_ID");
+                if (newWorkoutID != currentWorkoutID) {
+                    System.out.print("Workout Type: " + rs.getString("WORKOUT_NAME"));
+                    System.out.print(" (TypeID " + newWorkoutID + "):\n");
+                    currentWorkoutID = newWorkoutID;
+                }
+
+                System.out.print("\tExercise ID " + rs.getInt("EXERCISE_ID"));
+                System.out.print(": " + rs.getString("EXERCISE_NAME"));
+                System.out.print(" - '" + rs.getString("DESCRIPTION") + "'\n");
+            }
+        }
+
+        catch (Exception e)
+        {
             System.out.println("Db error: "+e);
         }
     }
