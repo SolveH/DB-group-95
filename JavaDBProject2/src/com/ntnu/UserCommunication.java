@@ -8,6 +8,7 @@ import java.util.Scanner;
 /**
  * Created by kiddi on 14.03.2017.
  */
+
 public class UserCommunication {
     Scanner scanner;
     Connector connector;
@@ -110,5 +111,30 @@ public class UserCommunication {
         String time = scanner.nextLine();
 
         connector.insertExerciseResult(exerciseID, workoutID, repetitions, sets, weight, distance, duration, time);
+    }
+
+    public void handleResultExercise(int exerciseID) {
+        try {
+            ResultSet rs = connector.getResultsForExercise(exerciseID);
+
+            if (rs.next())
+                System.out.println("Results for Exercise: "+rs.getString("EXERCISE_NAME"));
+            System.out.println("\nWEIGHT\tREPETITIONS\tSETS\tDURATION\tTIME");
+            while (rs.next()) {
+                System.out.print(rs.getString("WEIGHT")+"\t");
+                System.out.print(rs.getString("REPETITIONS") + "\t\t\t");
+                System.out.print(rs.getString("SETS")+"\t\t");
+                System.out.print(rs.getString("DURATION")+"\t\t");
+                System.out.print(rs.getString("EXERCISE_TIME"));
+
+                System.out.println("");
+            }
+            System.out.println("************************************************************************************");
+        }
+
+        catch (Exception e)
+        {
+            System.err.println("Db error: "+e);
+        }
     }
 }

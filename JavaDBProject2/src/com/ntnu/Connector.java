@@ -175,4 +175,22 @@ public class Connector extends DbConnect {
 
         return null;
     }
+
+    public ResultSet getResultsForExercise(int exerciseID){
+        try {
+            PreparedStatement stmt = null;
+
+            String sql = "SELECT * FROM EXERCISE_RESULT, EXERCISE " +
+                    "WHERE EXERCISE.EXERCISE_ID = " +exerciseID +
+                    " AND EXERCISE.EXERCISE_ID = EXERCISE_RESULT.EXERCISE_ID";
+            stmt = conn.prepareStatement(sql);
+            return stmt.executeQuery();
+        }
+
+        catch (Exception e) {
+            System.err.println("DB ERROR: " +e);
+        }
+
+        return null;
+    }
 }
