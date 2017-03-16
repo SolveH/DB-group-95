@@ -6,10 +6,10 @@ public class Main {
 		Connector c = new Connector();
 		c.connect();
 
-		System.out.println("************************************************************************************");
-		System.out.println("The following workout types with corresponding exercises are available as templates:");
-		c.printWorkoutsWithExercises();
-		System.out.println("************************************************************************************");
+		//System.out.println("************************************************************************************");
+		//System.out.println("The following workout types with corresponding exercises are available as templates:");
+		//c.printWorkoutsWithExercises();
+		//System.out.println("************************************************************************************");
 
 		UserCommunication uc = new UserCommunication(c);
 		uc.startupQuestions();

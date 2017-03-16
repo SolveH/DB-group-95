@@ -13,20 +13,12 @@ public class UserCommunication {
     Scanner scanner;
     Connector connector;
 
-    /**
-     * Constructor
-     *
-     * @param connector
-     */
     public UserCommunication(Connector connector)
     {
         this.scanner = new Scanner(System.in);
         this.connector = connector;
     }
 
-    /**
-     *
-     */
     public void startupQuestions() {
         while (true){
             System.out.println("Choose what you want to do:");
@@ -37,14 +29,18 @@ public class UserCommunication {
                     "\nEnter 5 if you want to exit the application:");
             int choice = scanner.nextInt();
             scanner.nextLine();
+
             if(choice == 1) {
+                printWorkoutsWithExercises();
                 handleWorkoutInsert();
             }else if(choice == 2) {
                 handleWorkoutTypeInsert();
             }else if(choice == 3) {
+                printWorkoutsWithExercises();
                 System.out.println("Please enter a valid Exercise ID:");
                 handleResultExercise(scanner.nextInt());
             }else if(choice == 4) {
+                printWorkoutsWithExercises();
                 System.out.println("Please enter a valid Workout ID:");
                 handleResultWorkout(scanner.nextInt());
             }else if(choice == 5) {
@@ -54,6 +50,13 @@ public class UserCommunication {
                 System.out.println("Error: You didn't enter one of the numbers asked for.");
             }
         }
+    }
+
+    public void printWorkoutsWithExercises() {
+        System.out.println("************************************************************************************");
+        System.out.println("The following workout types with corresponding exercises are available as templates:");
+        connector.printWorkoutsWithExercises();
+        System.out.println("************************************************************************************");
     }
 
     public void handleWorkoutInsert() {
@@ -106,13 +109,6 @@ public class UserCommunication {
         }
     }
 
-    /**
-     *
-     * @param exerciseID
-     * @param exerciseName
-     * @param exerciseDescription
-     * @param workoutID
-     */
     public void handleExerciseResultInsert(int exerciseID, String exerciseName, String exerciseDescription, int workoutID) {
         System.out.println("Record the results of exercise " + exerciseID + ": " + exerciseName + " ('" + exerciseDescription + "')");
 
@@ -141,6 +137,7 @@ public class UserCommunication {
 
         connector.insertExerciseResult(exerciseID, workoutID, repetitions, sets, weight, distance, duration, time);
     }
+
     public void handleWorkoutTypeInsert(){
         System.out.println("Add exercise type");
         System.out.print("\tEnter this workout type's name: ");
@@ -148,9 +145,15 @@ public class UserCommunication {
 
         int typeID = connector.insertWorkoutType(name);
 
+        System.out.print("How many exercises do your want to add to this workout? ");
+        int numExercises = scanner.nextInt();
+        scanner.nextLine();
 
-        handleExerciseTypeInsert(typeID);
+        for (int i = 0; i < numExercises; i++) {
+            handleExerciseTypeInsert(typeID);
+        }
     }
+
     public void handleExerciseTypeInsert(int workoutTypeID) {
         System.out.println("Record an exercise type");
 
@@ -186,7 +189,7 @@ public class UserCommunication {
 
                 System.out.println("");
             }
-            System.out.println("************************************************************************************");
+            System.out.println("\n************************************************************************************\n");
         }
 
         catch (Exception e)

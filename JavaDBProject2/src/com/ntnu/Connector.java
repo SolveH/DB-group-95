@@ -8,40 +8,6 @@ import java.time.*;
  */
 public class Connector extends DbConnect {
 
-    public void printExercises()
-    {
-        try {
-            Statement stmt = conn.createStatement();
-            String query = "SELECT * FROM `WORKOUT`";
-            ResultSet rs = stmt.executeQuery(query);
-            int nr = 1;
-            while (rs.next()) {
-                System.out.println(" "+nr++ + " "+ rs.getString("name"));
-            }
-        }
-
-        catch (Exception e)
-        {
-            System.out.println("Db error: "+e);
-        }
-    }
-
-    /**
-     *
-     *
-     * @param typeID
-     * @param workoutDateTime
-     * @param name
-     * @param duration
-     * @param shape
-     * @param note
-     * @param weather
-     * @param audience
-     * @param ventilation
-     * @param temp
-     *
-     * @return Auto generated workoutID. Returns -1 if an error occurred.
-     */
     public int insertWorkout(int typeID, String workoutDateTime, String name, String duration, String shape,
                               String note, String weather, String audience, String ventilation, String temp) {
         try {
@@ -80,17 +46,15 @@ public class Connector extends DbConnect {
 
         return -1;
     }
-    /**
-    * @param workoutTypeName
-     */
+
     public int insertWorkoutType(String workoutTypeName){
         try {
             PreparedStatement stmt = null;
 
             String sql = "INSERT INTO WORKOUT_TYPE (WORKOUT_NAME)\n" +
                     "VALUES (?)";
+
             stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            stmt = conn.prepareStatement(sql);
             stmt.setString(1, workoutTypeName);
             int rows = stmt.executeUpdate();
 
@@ -109,17 +73,6 @@ public class Connector extends DbConnect {
         return -1;
     }
 
-    /**
-     *
-     * @param exerciseID
-     * @param workoutID
-     * @param repetitions
-     * @param sets
-     * @param weight
-     * @param distance
-     * @param duration
-     * @param time
-     */
     public void insertExerciseResult(int exerciseID, int workoutID, int repetitions, int sets, float weight, float distance, float duration, String time) {
         try {
             PreparedStatement stmt = null;
@@ -146,9 +99,6 @@ public class Connector extends DbConnect {
         }
     }
 
-    /**
-     *
-     */
     public void printWorkoutsWithExercises() {
         try {
             Statement stmt = conn.createStatement();
@@ -177,11 +127,6 @@ public class Connector extends DbConnect {
         }
     }
 
-    /**
-     *
-     * @param typeID
-     * @return
-     */
     public ResultSet getExercisesForWorkout(int typeID) {
         try {
             PreparedStatement stmt = null;
@@ -203,6 +148,7 @@ public class Connector extends DbConnect {
 
         return null;
     }
+
     public void printExerciseGroups() {
         try {
             Statement stmt = conn.createStatement();
@@ -264,7 +210,7 @@ public class Connector extends DbConnect {
             stmt.setInt(1, workoutTypeID);
             stmt.setInt(2, exerciseTypeID);
 
-            //int rows = stmt.executeUpdate();
+            int rows = stmt.executeUpdate();
             //System.out.println("Rows impacted by insertExercise: " + rows);
 
         } catch (Exception e) {
