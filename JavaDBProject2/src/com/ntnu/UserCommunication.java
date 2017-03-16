@@ -137,4 +137,16 @@ public class UserCommunication {
             System.err.println("Db error: "+e);
         }
     }
+
+    public void handleResultWorkout(int typeID) {
+        try {
+            ResultSet rs = connector.getExercisesForWorkout(typeID);
+            while (rs.next())
+                handleResultExercise(rs.getInt("EXERCISE_ID"));
+        }
+
+        catch (Exception e){
+            System.err.println("DB ERROR: "+e);
+        }
+    }
 }
