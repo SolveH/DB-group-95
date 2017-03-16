@@ -28,17 +28,31 @@ public class UserCommunication {
      *
      */
     public void startupQuestions() {
-        System.out.println("Choose what you want to do:");
-        System.out.println("Enter 1 if you want to add a workout " +
-                "\nEnter 2 if you want to add a workout type:");
-        int choice = scanner.nextInt();
-        scanner.nextLine();
-        if(choice == 1) {
-            handleWorkoutInsert();
-        }else if(choice == 2){
-            handleWorkoutTypeInsert();
-        }else{
-            System.out.println("Error: You didn't enter one of the numbers asked for.");
+        while (true){
+            System.out.println("Choose what you want to do:");
+            System.out.println("Enter 1 if you want to add a workout " +
+                    "\nEnter 2 if you want to add a workout type:" +
+                    "\nEnter 3 if you want to get the results for a specific exercise:" +
+                    "\nEnter 4 if you want to get the results for all the exercises in a workout:" +
+                    "\nEnter 5 if you want to exit the application:");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+            if(choice == 1) {
+                handleWorkoutInsert();
+            }else if(choice == 2) {
+                handleWorkoutTypeInsert();
+            }else if(choice == 3) {
+                System.out.println("Please enter a valid Exercise ID:");
+                handleResultExercise(scanner.nextInt());
+            }else if(choice == 4) {
+                System.out.println("Please enter a valid Workout ID:");
+                handleResultWorkout(scanner.nextInt());
+            }else if(choice == 5) {
+                System.out.println("Bye :)");
+                break;
+            }else{
+                System.out.println("Error: You didn't enter one of the numbers asked for.");
+            }
         }
     }
 
@@ -159,9 +173,10 @@ public class UserCommunication {
         try {
             ResultSet rs = connector.getResultsForExercise(exerciseID);
 
-            if (rs.next())
-                System.out.println("Results for Exercise: "+rs.getString("EXERCISE_NAME"));
+            if (rs.first())
+                System.out.println("Results for Exercise: "+rs.getString("EXERCISE_NAME") + " ID: " + rs.getString("EXERCISE_ID"));
             System.out.println("\nWEIGHT\tREPETITIONS\tSETS\tDURATION\tTIME");
+            rs.previous();
             while (rs.next()) {
                 System.out.print(rs.getString("WEIGHT")+"\t");
                 System.out.print(rs.getString("REPETITIONS") + "\t\t\t");
