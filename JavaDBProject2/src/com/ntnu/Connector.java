@@ -80,6 +80,34 @@ public class Connector extends DbConnect {
 
         return -1;
     }
+    /**
+    * @param workoutTypeName
+     */
+    public int insertWorkoutType(String workoutTypeName){
+        try {
+            PreparedStatement stmt = null;
+
+            String sql = "INSERT INTO WORKOUT_TYPE (WORKOUT_NAME)\n" +
+                    "VALUES (?)";
+            stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, workoutTypeName);
+            int rows = stmt.executeUpdate();
+
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1);
+                }
+                else {
+                    throw new SQLException("Error: Could not get auto generated keys.");
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("Db error: "+e);
+        }
+        return -1;
+    }
 
     /**
      *
@@ -174,6 +202,74 @@ public class Connector extends DbConnect {
         }
 
         return null;
+    }
+    public void printExerciseGroups() {
+        try {
+            Statement stmt = conn.createStatement();
+            String sql = "SELECT * FROM EXERCISE_GROUP;";
+
+            ResultSet rs = stmt.executeQuery(sql);
+
+            System.out.println("Workout Groups:");
+            while (rs.next()) {
+                System.out.print("\t" + rs.getString("GROUP_NAME"));
+                System.out.print(" (ID: " + rs.getInt("GROUP_ID") + ")");
+                System.out.print(" - '" + rs.getString("DESCRIPTION") + "'\n");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Db error: "+e);
+        }
+    }
+
+    public int insertExerciseType(String exerciseTypeName, String exerciseTypeDescription, int groupID) {
+        try {
+            PreparedStatement stmt = null;
+
+            String sql = "INSERT INTO EXERCISE (GROUP_ID, EXERCISE_NAME, DESCRIPTION)\n" +
+                    "VALUES (?,?,?);";
+
+            stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            stmt.setInt(1, groupID);
+            stmt.setString(2, exerciseTypeName);
+            stmt.setString(3, exerciseTypeDescription);
+
+            int rows = stmt.executeUpdate();
+            //System.out.println("Rows impacted by insertExercise: " + rows);
+
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1);
+                }
+                else {
+                    throw new SQLException("Error: Could not get auto generated keys.");
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("Db error: "+e);
+        }
+
+        return -1;
+    }
+
+    public void insertExerciseWorkoutType(int exerciseTypeID, int workoutTypeID) {
+        try {
+            PreparedStatement stmt = null;
+
+            String sql = "INSERT INTO EXERCISE_WORKOUT_TYPE (TYPE_ID, EXERCISE_ID)\n" +
+                    "VALUES (?,?)";
+
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, workoutTypeID);
+            stmt.setInt(2, exerciseTypeID);
+
+            //int rows = stmt.executeUpdate();
+            //System.out.println("Rows impacted by insertExercise: " + rows);
+
+        } catch (Exception e) {
+            System.out.println("Db error: "+e);
+        }
     }
 
     public ResultSet getResultsForExercise(int exerciseID){

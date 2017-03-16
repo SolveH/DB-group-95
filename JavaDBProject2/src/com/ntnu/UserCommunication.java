@@ -27,6 +27,21 @@ public class UserCommunication {
     /**
      *
      */
+    public void startupQuestions() {
+        System.out.println("Choose what you want to do:");
+        System.out.println("Enter 1 if you want to add a workout " +
+                "\nEnter 2 if you want to add a workout type:");
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+        if(choice == 1) {
+            handleWorkoutInsert();
+        }else if(choice == 2){
+            handleWorkoutTypeInsert();
+        }else{
+            System.out.println("Error: You didn't enter one of the numbers asked for.");
+        }
+    }
+
     public void handleWorkoutInsert() {
         System.out.println("To record a workout, please provide the following information:");
 
@@ -103,7 +118,7 @@ public class UserCommunication {
         float distance = scanner.nextFloat();
         scanner.nextLine(); // to remove everything after the number entered by the user
 
-        System.out.print("\tEnter the duration [h]: ");
+        System.out.print("\tEnter the duration [min]: ");
         float duration = scanner.nextFloat();
         scanner.nextLine(); // to remove everything after the number entered by the user
 
@@ -111,6 +126,33 @@ public class UserCommunication {
         String time = scanner.nextLine();
 
         connector.insertExerciseResult(exerciseID, workoutID, repetitions, sets, weight, distance, duration, time);
+    }
+    public void handleWorkoutTypeInsert(){
+        System.out.println("Add exercise type");
+        System.out.print("\tEnter this workout type's name: ");
+        String name = scanner.nextLine();
+
+        int typeID = connector.insertWorkoutType(name);
+
+
+        handleExerciseTypeInsert(typeID);
+    }
+    public void handleExerciseTypeInsert(int workoutTypeID) {
+        System.out.println("Record an exercise type");
+
+        System.out.print("\tEnter the exercise type name: ");
+        String exerciseTypeName = scanner.nextLine();
+
+        System.out.print("\tEnter a description: ");
+        String exerciseTypeDescription = scanner.nextLine();
+
+        connector.printExerciseGroups();
+        System.out.print("\tEnter to which groupID this exercise belongs: ");
+        int groupID = scanner.nextInt();
+        scanner.nextLine(); // to remove everything after the number entered by the user
+
+        int exerciseTypeID = connector.insertExerciseType(exerciseTypeName, exerciseTypeDescription, groupID);
+        connector.insertExerciseWorkoutType(exerciseTypeID, workoutTypeID);
     }
 
     public void handleResultExercise(int exerciseID) {

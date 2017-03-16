@@ -12,6 +12,6 @@ public class Main {
 		System.out.println("************************************************************************************");
 
 		UserCommunication uc = new UserCommunication(c);
-		uc.handleWorkoutInsert();
+		uc.startupQuestions();
     }
 }
